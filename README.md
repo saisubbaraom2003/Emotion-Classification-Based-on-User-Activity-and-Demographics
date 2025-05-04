@@ -1,71 +1,174 @@
 # Emotion Classification Based on User Activity and Demographics
 
-## About the Project
-This project focuses on predicting the **dominant emotion** of users on a platform using features derived from user activity (such as messages sent, posts per day, and usage time) and demographic data (like age, gender, and platform). The task is treated as a **multi-class classification problem**, where the target variable is the user's dominant emotion.
+## 🎯 About the Project
+
+This project focuses on predicting the **dominant emotion** of users on a platform using features derived from user activity (such as messages sent, posts per day, and usage time) and demographic data (like age, gender, and platform). The task is a **multi-class classification problem**, where the target variable is the user's dominant emotion.
 
 ---
 
-## Techniques Used
+## 🧹 Data Preprocessing & Cleaning
 
-### 🧹 Data Preprocessing & Cleaning
-- Handling incorrect data types (e.g., converting `Age` from object to numeric).
-- Filling missing values using:
-  - **Mean** imputation for numeric columns.
-  - **Mode** for categorical columns (e.g., `Gender`).
-- Dropping records with negligible missing data (<1%).
-- **Outlier treatment** using the **IQR (Interquartile Range)** method.
+- Converted incorrect data types (e.g., `Age` from object to numeric).
+- Filled missing values using:
+  - **Mean** for numeric columns.
+  - **Mode** for categorical columns like `Gender`.
+- Dropped records with negligible missing data (<1%).
+- **Outlier detection and removal** using the **IQR (Interquartile Range)** method.
 
-### 📊 Exploratory Data Analysis (EDA)
-- Visualizations of **categorical and numeric data distributions** by dominant emotion.
-- **Correlation matrix analysis** to identify and remove highly correlated features:
-  - `Likes_Received_Per_Day`, `Comments_Received_Per_Day`, `Messages_Sent_Per_Day` removed due to high correlation.
+---
 
-### 🔄 Feature Engineering
-- Segregating features into:
+## 📊 Exploratory Data Analysis (EDA)
+
+- Plotted distributions of categorical and numerical features based on emotions.
+- Used a **correlation matrix** to identify and remove multicollinearity:
+  - Removed `Likes_Received_Per_Day`, `Comments_Received_Per_Day`, and `Messages_Sent_Per_Day`.
+
+---
+
+## 🔄 Feature Engineering
+
+- Segregated features into:
   - **Categorical**
   - **Numerical**
   - **Target**
-- Encoding:
-  - **Label Encoding** for target variable (emotion levels).
-  - **One-Hot Encoding** for categorical variables (`Gender`, `Platform`).
-- **Feature Scaling** for numerical features (required for distance-based models like KNN, SVC).
+- **Label Encoding**: Used for the target emotion column.
+- **One-Hot Encoding**: Applied on `Gender`, `Platform`.
+- **Feature Scaling**: Standardized numerical features (important for models like KNN and SVC).
 
 ---
 
-## 🤖 Machine Learning Models
-Several models were trained and compared:
+## 🤖 Machine Learning Models Used
 
-- **Logistic Regression** – Baseline model, fast, interpretable.
-- **Decision Tree Classifier** – Non-linear, interpretable.
-- **Random Forest Classifier** – Ensemble learning to reduce overfitting.
-- **XGBoost Classifier** – Boosting technique, very effective for structured data.
-- **K-Nearest Neighbors (KNN)** – Instance-based, sensitive to scaling.
-- **Support Vector Classifier (SVC)** – Good for small to medium datasets.
+| Model                  | Type                | Comment                                                                 |
+|------------------------|---------------------|-------------------------------------------------------------------------|
+| LogisticRegression     | Linear              | Simple, fast, good baseline model.                                      |
+| DecisionTreeClassifier | Tree-Based          | Easy to interpret, prone to overfitting.                                |
+| RandomForestClassifier | Ensemble (Trees)    | Reduces overfitting using bagging.                                      |
+| XGBClassifier          | Gradient Boosting   | Powerful and flexible.                                                  |
+| KNeighborsClassifier   | Distance-Based      | Needs scaling; good for small data.                                     |
+| SVC                    | Kernel-Based        | Effective for complex boundaries.                                       |
+| GaussianNB             | Probabilistic       | Very fast; assumes feature independence.                                |
+| MLPClassifier          | Neural Network      | Learns complex patterns. Needs proper tuning.                           |
+| ExtraTreesClassifier   | Ensemble (Random)   | Like RF, but introduces more randomness for potentially better results. |
+| AdaBoostClassifier     | Boosting            | Reduces bias by combining weak learners.                                |
+| VotingClassifier       | Ensemble            | Aggregates predictions from multiple models (soft voting used).         |
 
 ---
 
-## 🧰 Technologies Used
+## 🎯 Hyperparameter Tuning
 
-- **Python**
-- **Pandas**, **NumPy** – Data manipulation
-- **Matplotlib**, **Seaborn** – Visualization
-- **Scikit-learn** – Preprocessing, model training, evaluation
-- **XGBoost** – Advanced gradient boosting
+Used **GridSearchCV** for optimizing RandomForestClassifier:
+
+**Parameter Grid:**
+
+- `n_estimators`: [100, 200]
+- `max_depth`: [None, 10, 20]
+- `min_samples_split`: [2, 5]
+- `min_samples_leaf`: [1, 2]
+- `bootstrap`: [True, False]
+
+**Results:**
+
+- **Best Parameters**:  
+  `{'bootstrap': True, 'max_depth': None, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}`
+- **Best Cross-Validation Score**: 0.99
+- **Training Accuracy**: 1.00  
+- **Testing Accuracy**: 0.988  
+
+---
+
+## 📈 Evaluation
+
+- **Precision**: Very few false positives.
+- **Recall**: Most actual instances are correctly identified.
+- **F1-Score**: Balanced between precision and recall.
+- **Macro Avg / Weighted Avg**: High and consistent across classes.
+
+### 📊 Classification Report Summary
+
+| Emotion   | Precision | Recall | F1-Score | Support |
+|-----------|-----------|--------|----------|---------|
+| Happiness | 1.00      | 1.00   | 1.00     | 33      |
+| Neutral   | 1.00      | 1.00   | 1.00     | 42      |
+| Boredom   | 0.94      | 0.97   | 0.96     | 35      |
+| Anxiety   | 1.00      | 1.00   | 1.00     | 50      |
+| Anger     | 0.98      | 1.00   | 0.99     | 50      |
+| Sadness   | 1.00      | 0.95   | 0.97     | 40      |
+| **Overall Accuracy** |       |        | **0.99** | **250** |
+
+---
+
+## 📉 Confusion Matrix
+
+Visualized using a heatmap:
+
+| Emotion     | Misclassifications                          |
+|-------------|---------------------------------------------|
+| Happiness   | 0                                            |
+| Neutral     | 0                                            |
+| Boredom     | 1 sample misclassified as Anger             |
+| Anxiety     | 0                                            |
+| Anger       | 0                                            |
+| Sadness     | 2 samples misclassified as Boredom          |
+
+> Conclusion: No emotion is consistently misclassified. Minor confusion only between Boredom and Sadness — indicating strong generalization.
 
 ---
 
 ## ☁️ Deployment
 
-- Initially deployed on **Microsoft Azure** and **Amazon Web Services (AWS)** during development and testing phases.
-- Due to expiration of free trial credits on those platforms, the final deployment was successfully completed using **[Render](https://render.com/)**, a cloud platform for hosting web applications and APIs.
+- Initially deployed to:
+  - **Microsoft Azure**
+  - **Amazon Web Services (AWS)**  
+  *(during free trial periods)*
+
+- **Final Deployment**:
+  - Moved to **[Render](https://render.com/)** after cloud credits expired.
+  - Hosted as a **REST API** or **web interface** for real-time predictions.
 
 ---
 
-## 🧭 Approach
+## 📦 Technologies Used
 
-1. **Data Preparation:** Clean and transform the raw data.
-2. **Feature Analysis:** Use EDA and correlation to understand and refine features.
-3. **Encoding & Scaling:** Make data suitable for ML models.
-4. **Model Training:** Try various algorithms to find the best-performing one.
-5. **Model Evaluation:** Compare models using appropriate metrics (not detailed in preview but likely included in notebook).
-6. **Deployment:** Deploy the final model using cloud services, ending with Render for continuous access.
+- **Python**
+- **Pandas**, **NumPy** – Data preprocessing & manipulation
+- **Matplotlib**, **Seaborn** – Data visualization
+- **Scikit-learn** – ML modeling and evaluation
+- **XGBoost** – Boosting model
+- **Render** – Final cloud deployment platform
+
+---
+
+## 🧭 Approach Summary
+
+1. **Data Preparation**: Cleaned and structured the dataset.
+2. **EDA**: Visualized feature distributions and relationships.
+3. **Feature Engineering**: Encoded and scaled data appropriately.
+4. **Model Selection**: Trained multiple models to identify the best.
+5. **Hyperparameter Tuning**: Used GridSearchCV for optimization.
+6. **Evaluation**: Measured performance using metrics and cross-validation.
+7. **Deployment**: Hosted the final model in the cloud using Render.
+
+---
+
+## 🏷️ Emotion Label Mapping
+
+| Emotion   | Label |
+|-----------|-------|
+| Happiness | 0     |
+| Neutral   | 1     |
+| Boredom   | 2     |
+| Anxiety   | 3     |
+| Anger     | 4     |
+| Sadness   | 5     |
+
+---
+
+## Contribution
+Feel free to contribute by opening issues or submitting pull requests.
+## Contact
+For any queries, contact me sai.subbu.in@gmail.com
+
+---
+**Author:** Sai Subba Rao Mahendrakar  
+**Date:** 4 May 2025  
