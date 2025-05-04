@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-left: 5px solid #007BFF;
+            color: #007BFF;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Predict Your Dominant Emotion</h2>
+        <form method="post">
+            <label>Age:</label>
+            <input type="number" name="age" required>
+
+            <label>Daily Usage Time (minutes):</label>
+            <input type="number" name="usage_time" required>
+
+            <label>Posts Per Day:</label>
+            <input type="number" name="posts" required>
+
+            <label>Gender:</label>
+            <select name="gender" required>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Non-binary">Non-binary</option>
+            </select>
+
+            <label>Platform:</label>
+            <select name="platform" required>
+                <option value="Instagram">Instagram</option>
+                <option value="Twitter">Twitter</option>
+                <option value="Facebook">Facebook</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Whatsapp">Whatsapp</option>
+                <option value="Telegram">Telegram</option>
+                <option value="Snapchat">Snapchat</option>
+            </select>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result-box">
+            Predicted Emotion: {{ prediction }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
