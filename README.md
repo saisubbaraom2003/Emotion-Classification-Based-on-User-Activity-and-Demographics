@@ -115,18 +115,6 @@ Visualized using a heatmap:
 
 ---
 
-## ☁️ Deployment
-
-- Initially deployed to:
-  - **Microsoft Azure**
-  - **Amazon Web Services (AWS)**  
-  *(during free trial periods)*
-
-- **Final Deployment**:
-  - Moved to **[Render](https://emotion-classification-based-on-user-2gpl.onrender.com/)** after cloud credits expired.
-  - Hosted as a **REST API** or **web interface** for real-time predictions.
-
----
 
 ## 📦 Technologies Used
 
@@ -147,7 +135,6 @@ Visualized using a heatmap:
 4. **Model Selection**: Trained multiple models to identify the best.
 5. **Hyperparameter Tuning**: Used GridSearchCV for optimization.
 6. **Evaluation**: Measured performance using metrics and cross-validation.
-7. **Deployment**: Hosted the final model in the cloud using Render.
 
 ---
 
